@@ -1,16 +1,33 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" >
 <head>
+
+
 	<meta charset="UTF-8" />
-	<title>My Game</title>
+	<title>Jump Adventure</title>
 	<script type="text/javascript" src="js/phaser.min.js"></script>
     <style type="text/css">
         body {
             margin: 0;
+						background: '/assets/cave1.jpg' no-repeat center center fixed;
+						-webkit-background-size: cover;
+						-moz-background-size: cover;
+						-o-background-size: cover;
+						background-size: cover;
         }
+				html {
+				  background: '/assets/cave1.jpg' no-repeat center center fixed;
+				  -webkit-background-size: cover;
+				  -moz-background-size: cover;
+				  -o-background-size: cover;
+				  background-size: cover;
+				}
+				canvas {   display : block;   margin : auto; margin-top: 20px;}
+
     </style>
+
 </head>
-<body>
+<body background="assets/cave1.jpg">
 
 <script type="text/javascript">
 
@@ -55,7 +72,6 @@ preload: function() {
 	game.load.image('sky', 'assets/back_cave_0.png');
 	game.load.image('ground', 'assets/platform.png');
 	game.load.image('grass-block', 'assets/grass_square.png');
-	game.load.image('star', 'assets/star.png');
 	game.load.spritesheet('dude', "assets/indianajones.png", 32, 48);
 	game.load.image('grass', 'assets/grass.png');
 	game.load.image('lava', 'assets/lava.png');
@@ -75,22 +91,14 @@ create: function(){
 	game.world.setBounds(0, 0, 600, 6000);
 	var gameSky = game.add.tileSprite(0, 0, 600, 600, 'sky');
 	gameSky.fixedToCamera = true;
-	// WIDE x HEIGHT
-	// add background, 0,0 is placed at the top LEFT of the area, but is actually the center of infinite "world"
-	// this sky is a png the size of 800 x 600, which is the screen size here
-	// 800 WIDE  by 600 HIGH
-	// game.add.sprite(0,0,"sky");
-	// background = game.add.tileSprite(0, game.world.height - 600, 600, 800, "sky");
+
 	game.stage.backgroundColor = '#71c5cf';
 
 	// when making a thing put it in a group so it holds all the properties
 	platforms = game.add.group();
 	// gives it physics
 	platforms.enableBody = true;
-	// platforms.checkCollision.down = false;
-	// platforms.body.checkCollision = { none: false, any: true, up: true, down: false, left: false, right: false };
 
-	// THE GROUND IS ACTUALLY A PLATFORM!  64 because the original height is 32?????
 
 	grounds = game.add.group();
 	grounds.enableBody = true;
@@ -137,46 +145,12 @@ create: function(){
 
 	cursors = game.input.keyboard.createCursorKeys();
 
-
-
-	// // NOW we are creating stars
-	// stars = game.add.group();
-	//
-	// //  We will enable physics for any star that is created in this group
-	// stars.enableBody = true;
-	//
-	// //  Here we'll create 12 of them evenly spaced apart
-	// for (var i = 0; i < 12; i++)
-	// {
-	// 		//  Create a star inside of the 'stars' group
-	// 		var star = stars.create(i * 70, 0, 'star');
-	//
-	// 		//  Let gravity do its thing
-	// 		star.body.gravity.y = 300;
-	//
-	// 		//  This just gives each star a slightly random bounce value
-	// 		star.body.bounce.y = 0.7 + Math.random() * 0.2;
-	// }
-	//
-	//
 	// // NOW we build the score text
 	// // 16,16 is position, score: 0 is the default TEXT, using default font
 	scoreText = game.add.text(16, 16, 'Score:' + score, { fontSize: '32px', fill: '#000' });
 
 	cursors = game.input.keyboard.createCursorKeys();
 },
-
-// function killPlatforms(){
-// 	platforms.children.forEach(function(ledge){
-//
-//
-// 		var height = parseInt(ledge.position.y);
-// 		var thing = parseInt(game.camera.view.y);
-// 		if (height < thing && ledge.alive){
-// 			ledge.kill();
-// 		}
-// 	});
-// }
 
 getPlatformStats: function(){
 	var maxPlatformHeight = 6000;
@@ -229,19 +203,16 @@ update: function() {
 			player.body.velocity.y = -350;
 			score += 1;
 			platform.kill();
-					// platforms.body.velocity.y = 350;
 	});
 	game.physics.arcade.collide(player, grounds);
 
-	// if (player)
-	// player.body.bounce.set(2);
 
 
 
 	game.physics.arcade.collide(player, lavas, function(){
 		that.gameOver();
 	});
-	// killPlatforms();
+
 	this.createPlatform();
 	// calling the controls
 	// reset the movement velocity
@@ -265,9 +236,7 @@ update: function() {
 	} else {
 
 	}
-	  // game.world.wrap( player, 0, true);
 
-	// 5400 appears to be the bottom
 
 	if (cursors.left.isDown || game.input.keyboard.isDown(Phaser.Keyboard.A)){
 		// moves left at -150, and runs the left animation from the spritesheet
@@ -292,11 +261,11 @@ update: function() {
 	}
 },
 	gameOver: function(){
-	// 	game.add.text(game.camera.target._cache[0], game.camera.target._cache[1], "GAME OVER", { fontSize: '32px', fill: '#000' });
+
 	game.state.start('Game_Over');
 },
-gameWInr: function(){
-// 	game.add.text(game.camera.target._cache[0], game.camera.target._cache[1], "GAME OVER", { fontSize: '32px', fill: '#000' });
+gameWon: function(){
+
 game.state.start('Game_Won');
 }
 
@@ -352,8 +321,6 @@ var Game_Won= {
 			// Create button to start game like in Menu.
 			this.add.button(235, 100, 'gameover', this.startGame, this);
 
-			// game.add.button(235, 100, "Play Again?", { font: "bold 16px sans-serif", fill: "#46c0f9", align: "center"}, this.startGame);
-			// Add text with information about the score from last game.
 			game.add.text(150, 300, "You win!", { font: "bold 16px sans-serif", fill: "#fff", align: "center"});
 			game.add.text(235, 350, "HIGH SCORE", { font: "bold 16px sans-serif", fill: "#fff", align: "center"});
 			game.add.text(350, 348, score.toString(), { font: "bold 20px sans-serif", fill: "#fff", align: "center" });
